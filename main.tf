@@ -21,9 +21,9 @@ resource "random_string" "random" {
 }
 
 # If `create_ssl_certificate` is false, we lookup the certificate by name
-data "google_certificate_manager_certificate_map" "cert_map" {
+data "google_certificate_manager_certificates" "default" {
   count = var.create_ssl_certificate ? 1 : 0
-  name  = var.ssl_certificate_name
+  filter = "name:projects/#{var.project}/locations/GLOBAL/certificates/deepfield-net-wildcard"
 }
 
 data "google_compute_image" "cos" {
@@ -427,7 +427,7 @@ resource "google_compute_target_https_proxy" "default" {
   name    = var.name
   url_map = google_compute_url_map.default.id
   ssl_certificates = [
-    var.create_ssl_certificate ? google_compute_managed_ssl_certificate.default.id : data.google_certificate_manager_certificate_map.cert_map.id
+    var.create_ssl_certificate ? google_compute_managed_ssl_certificate.default.id : data.google_certificate_manager_certificates.default.id
   ]
   ssl_policy = var.ssl_policy
   project    = var.project
