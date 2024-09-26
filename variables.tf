@@ -122,6 +122,17 @@ variable "iap" {
   default     = null
 }
 
+variable "create_ssl_certificate" {
+  description = "Determines whether to create a GCP Managed SSL certificate. If `false`, then `ssl_certificate_name` must be provided"
+  type        = bool
+  default     = true
+}
+
+variable "ssl_certificate_name" {
+  description = "The name of the certificate stored in GCP Certificate Manager."
+  type        = string
+}
+
 variable "ssl_policy" {
   type        = string
   description = "The SSL policy name that the certificate must follow"

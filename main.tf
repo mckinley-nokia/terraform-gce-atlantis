@@ -20,6 +20,12 @@ resource "random_string" "random" {
   upper   = false
 }
 
+# If `create_ssl_certificate` is false, we lookup the certificate by name
+data "google_compute_ssl_certificate" "cert" {
+  count = var.create_ssl_certificate ? 1 : 0
+  name  = var.ssl_certificate_name
+}
+
 data "google_compute_image" "cos" {
   family  = "cos-stable"
   project = "cos-cloud"
@@ -421,7 +427,7 @@ resource "google_compute_target_https_proxy" "default" {
   name    = var.name
   url_map = google_compute_url_map.default.id
   ssl_certificates = [
-    google_compute_managed_ssl_certificate.default.id,
+    var.create_ssl_certificate ? google_compute_managed_ssl_certificate.default.id : data.google_compute_ssl_certificate.cert.id
   ]
   ssl_policy = var.ssl_policy
   project    = var.project
