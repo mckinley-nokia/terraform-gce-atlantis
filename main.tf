@@ -24,6 +24,7 @@ resource "random_string" "random" {
 data "google_certificate_manager_certificates" "default" {
   count = var.create_ssl_certificate ? 1 : 0
   filter = "name:projects/#{var.project}/locations/GLOBAL/certificates/deepfield-net-wildcard"
+  provider = google-beta
 }
 
 data "google_compute_image" "cos" {
